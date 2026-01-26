@@ -15,6 +15,7 @@ use App\Http\Controllers\CentersController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryProductController;
 use App\Http\Controllers\InventoryStockController;
+use App\Http\Controllers\PermissionController;
 
 
 Route::get('/user', function (Request $request) {
@@ -122,4 +123,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Inventory Stock routes
     Route::get('/inventory-stocks/all', [InventoryStockController::class, 'all']);
+
+    // Permission Management routes
+    Route::get('/permissions', [PermissionController::class, 'getAllPermissions']);
+    Route::get('/users/permissions', [PermissionController::class, 'getAllUsersWithPermissions']);
+    Route::get('/users/me/permissions', [PermissionController::class, 'getMyPermissions']);
+    Route::get('/users/{userId}/permissions', [PermissionController::class, 'getUserPermissions']);
+    Route::put('/users/{userId}/permissions', [PermissionController::class, 'updateUserPermissions']);
+    Route::post('/permissions/check', [PermissionController::class, 'checkPermission']);
 });
