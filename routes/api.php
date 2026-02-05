@@ -16,6 +16,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\InventoryProductController;
 use App\Http\Controllers\InventoryStockController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ReportController;
 
 
 Route::get('/user', function (Request $request) {
@@ -131,4 +132,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/{userId}/permissions', [PermissionController::class, 'getUserPermissions']);
     Route::put('/users/{userId}/permissions', [PermissionController::class, 'updateUserPermissions']);
     Route::post('/permissions/check', [PermissionController::class, 'checkPermission']);
+
+
 });
+  // Report routes
+    Route::get('/reports/grn', [ReportController::class, 'grnReport']);
+    Route::get('/reports/invoice', [ReportController::class, 'invoiceReport']);
+    Route::get('/reports/sales-order', [ReportController::class, 'salesOrderReport']);
+    Route::get('/reports/sales-return', [ReportController::class, 'salesReturnReport']);
+    Route::get('/reports/purchase-order', [ReportController::class, 'purchaseOrderReport']);
+    Route::get('/reports/purchase-return', [ReportController::class, 'purchaseReturnReport']);
+    Route::get('/reports/stock-transfer', [ReportController::class, 'stockTransferReport']);
+    Route::get('/reports/stock-verification', [ReportController::class, 'stockVerificationReport']);
+    Route::get('/reports/customer', [ReportController::class, 'customerReport']);
+    Route::get('/reports/supplier', [ReportController::class, 'supplierReport']);
+    Route::get('/reports/product', [ReportController::class, 'productReport']);
+    Route::get('/reports/center', [ReportController::class, 'centerReport']);
+    Route::get('/reports/{type}/export/pdf', [ReportController::class, 'exportToPdf']);
+    Route::get('/reports/{type}/export/excel', [ReportController::class, 'exportToExcel']);
