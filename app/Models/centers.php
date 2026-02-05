@@ -20,4 +20,14 @@ class centers extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'center_id');
+    }
+
+    public function inventoryStocks()
+    {
+        return $this->hasMany(inventory_stock::class, 'center_id');
+    }
 }

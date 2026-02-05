@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Supplier extends Model
 {
     // Table name matches existing migration
- 
+
        use SoftDeletes;
     protected $fillable = [
         'supplier_name',
@@ -20,5 +20,10 @@ class Supplier extends Model
         'credit_value',
         'credit_period',
     ];
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'supplier_id');
+    }
 }
 

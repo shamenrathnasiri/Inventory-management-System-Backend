@@ -29,4 +29,9 @@ class Customer extends Model
     {
         return $this->belongsTo(CustomerCategory::class);
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(Inventory::class, 'customer_id');
+    }
 }
