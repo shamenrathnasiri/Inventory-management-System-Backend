@@ -290,7 +290,7 @@ class ReportController extends Controller
             'items.product.discountLevel:id,name,value,description',
             'items.creator:id,name',
         ])
-        ->where('voucherNumber', 'LIKE', 'ST%')
+        ->where('voucherNumber', 'LIKE', 'ST-%')
         ->orderByDesc('created_at');
 
         // Apply filters
@@ -346,7 +346,7 @@ class ReportController extends Controller
             'items.product.discountLevel:id,name,value,description',
             'items.creator:id,name',
         ])
-        ->where('voucherNumber', 'LIKE', 'SV%')
+        ->where('voucherNumber', 'LIKE', 'STV-%')
         ->orderByDesc('created_at');
 
         // Apply filters
