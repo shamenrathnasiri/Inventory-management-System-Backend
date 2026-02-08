@@ -2074,7 +2074,8 @@ class InventoryController extends Controller
             $qty = (int) ($line['quantity'] ?? $line['qty'] ?? 0);
             $unitPrice = (float) ($line['unitPrice'] ?? $line['cost'] ?? 0);
             $minPrice = (float) ($line['min_price'] ?? $line['minPrice'] ?? 0);
-            $mrp = (float) ($line['mrp'] ?? 0);
+            // Accept legacy/typo key "amrp" to ensure MRP is stored for transfers
+            $mrp = (float) ($line['mrp'] ?? $line['amrp'] ?? 0);
             $amount = $line['amount'] ?? $line['total'] ?? ($qty * $unitPrice);
 
             $resolvedItems[] = [
@@ -2273,6 +2274,25 @@ class InventoryController extends Controller
             $status = $normalizedStatus;
         }
 
+        // Collect product IDs and fetch product data for mrp/min_price defaults
+        $productIds = [];
+        foreach ($items as $line) {
+            if (!is_array($line)) {
+                continue;
+            }
+            $productId = $line['product_id']
+                ?? $line['productId']
+                ?? $line['id']
+                ?? data_get($line, 'product.id');
+            if ($productId) {
+                $productIds[] = (int) $productId;
+            }
+        }
+
+        $products = product::whereIn('id', array_unique($productIds))
+            ->get()
+            ->keyBy('id');
+
         $linePayloads = [];
         foreach ($items as $line) {
             if (!is_array($line)) {
@@ -2290,9 +2310,13 @@ class InventoryController extends Controller
                 continue;
             }
 
+            $productData = $products->get((int) $productId);
+
             $unitPrice = (float) ($line['unitPrice'] ?? $line['cost'] ?? 0);
-            $minPrice = (float) ($line['min_price'] ?? $line['minPrice'] ?? 0);
-            $mrp = (float) ($line['mrp'] ?? 0);
+            // Fallback to product's min_price if not provided in request
+            $minPrice = (float) ($line['min_price'] ?? $line['minPrice'] ?? optional($productData)->min_price ?? 0);
+            // Accept legacy/typo key "amrp" and fallback to product's mrp if not provided
+            $mrp = (float) ($line['mrp'] ?? $line['amrp'] ?? optional($productData)->mrp ?? 0);
             $lineAmount = 0;
 
             $batchNumber = $this->normalizeBatchNumber(
